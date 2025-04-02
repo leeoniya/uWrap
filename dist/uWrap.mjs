@@ -13,37 +13,44 @@ const S = " ".charCodeAt(0);
 const N = "\n".charCodeAt(0);
 // const R = "\r".charCodeAt(0); (TODO: support \r\n breaks)
 // const T = "\t".charCodeAt(0);
-const SYMBS = `\`~!@#$%^&*()_+-=[]\\{}|;':",./<>?`;
+const SYMBS = `\`~!@#$%^&*()_+-=[]\\{}|;':",./<>? \t`;
 const NUMS = "1234567890";
 const UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const LOWER = "abcdefghijklmnopqrstuvwxyz";
-const SPACE = " \t";
 const CHARS = `${UPPER}${LOWER}${NUMS}${SYMBS}`;
+function supportsLetterSpacing(ctx) {
+    const _w = ctx.measureText('W').width;
+    const _letterSpacing = ctx.letterSpacing;
+    ctx.letterSpacing = '101px';
+    const w = ctx.measureText('W').width;
+    ctx.letterSpacing = _letterSpacing;
+    return w > _w;
+}
 function varPreLine(ctx) {
-    const letterSpacing = parseFloat(ctx.letterSpacing);
-    const wordSpacing = parseFloat(ctx.wordSpacing);
+    // Safari pre-18.4 does not support Canvas letterSpacing, and measureText() does not account for it
+    // so we have to add it manually. https://caniuse.com/mdn-api_canvasrenderingcontext2d_letterspacing
+    const fauxLetterSpacing = !supportsLetterSpacing(ctx) ? parseFloat(ctx.letterSpacing) : 0;
     // single-char widths in isolation
     const WIDTHS = {};
     for (let i = 0; i < CHARS.length; i++)
-        WIDTHS[CHARS.charCodeAt(i)] = ctx.measureText(CHARS[i]).width + letterSpacing;
-    for (let i = 0; i < SPACE.length; i++)
-        WIDTHS[SPACE.charCodeAt(i)] = ctx.measureText(SPACE[i]).width; // + letterSpacing;
+        WIDTHS[CHARS.charCodeAt(i)] = ctx.measureText(CHARS[i]).width + fauxLetterSpacing;
+    const wordSpacing = parseFloat(ctx.wordSpacing);
     if (wordSpacing > 0)
         WIDTHS[S] = wordSpacing;
     // build kerning/spacing LUT of upper+lower, upper+sym, upper+upper pairs. (this includes letterSpacing)
+    // holds kerning-adjusted width of the uppers
     const PAIRS = {};
     for (let i = 0; i < UPPER.length; i++) {
         let uc = UPPER.charCodeAt(i);
         PAIRS[uc] = {};
         for (let j = 0; j < CHARS.length; j++) {
             let ch = CHARS.charCodeAt(j);
-            let wid = ctx.measureText(`${UPPER[i]}${CHARS[j]}`).width - WIDTHS[ch] - letterSpacing;
+            let wid = ctx.measureText(`${UPPER[i]}${CHARS[j]}`).width - WIDTHS[ch] + fauxLetterSpacing;
             PAIRS[uc][ch] = wid;
         }
     }
     const eachLine = () => { };
     function each(text, width, cb = eachLine) {
-        width += 2;
         let fr = 0;
         while (text.charCodeAt(fr) === S)
             fr++;

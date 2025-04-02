@@ -102,7 +102,7 @@ test('actors', async (t) => {
   });
 
 
-  width = 122;
+  width = 121;
   expect = [
     'Rodney',
     'Dangerfield,',
@@ -250,7 +250,7 @@ test('actors (wrap after dash)', async (t) => {
 test('actors (wrap includes dash)', async (t) => {
   const text = 'Rodney-Dangerfield, Keith Gordon, Sally Kellerman, Robert3-Downey jr., Burt Young, Ned Beatty, Terry Farrell, Paxton Whitehead, M. Emmet Walsh, Adrienne Barbeau';
 
-  let width = 134;
+  let width = 135;
   let expect = [
     'Rodney-',
     'Dangerfield, Keith',
