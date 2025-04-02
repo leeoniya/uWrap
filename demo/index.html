@@ -1,0 +1,267 @@
+<!doctype html>
+<html>
+<head>
+  <title>uWrap Demo</title>
+
+  <link rel="preload" href="inter-v18-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+
+  <style>
+    @font-face {
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url('inter-v18-latin-regular.woff2') format('woff2');
+    }
+
+    body {
+      background-color: rgb(24 27 31);
+    }
+
+    .test {
+      font-family: Inter, sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+
+      background: #ffffff10;
+      line-height: 22px;
+      color: rgb(204, 204, 220);
+
+      /* https://issues.chromium.org/issues/40202198 */
+      /* white-space: break-spaces; */
+
+      letter-spacing: 0.15px;
+
+      display: inline-block;
+      margin: 5px;
+      vertical-align: top;
+
+      white-space: pre-line;
+
+      position: relative;
+    }
+
+    .test canvas {
+      position: absolute;
+    }
+  </style>
+</head>
+<body>
+  <!-- <script src="//unpkg.com/canvas-txt"></script> -->
+
+  <script type="module">
+    function randInt(min, max) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    import { sentence } from "./txtgen.mjs";
+
+    for (let i = 0; i < 500; i++) {
+      let d = document.createElement('div');
+      d.className = 'test';
+      d.style.width = randInt(50, 400) + 'px';
+      d.textContent = sentence();
+      document.body.appendChild(d);
+    }
+
+    import { varPreLine } from '../dist/uWrap.mjs';
+    import { split } from './canvas-hypertxt.mjs';
+
+    console.time('rand strings');
+    let strings = Array.from({length: 1e5}, () => sentence());
+    console.timeEnd('rand strings');
+
+    setTimeout(() => {
+      let can = document.createElement('canvas');
+      let ctx = can.getContext('2d');
+      let font = "14px Inter, sans-serif";
+      ctx.font = font;
+      ctx.letterSpacing = '0.15px';
+
+      setTimeout(() => {
+        console.time('uWrap 100k');
+        let wrap = varPreLine(ctx);
+
+        for (let i = 0; i < strings.length; i++) {
+          let text = strings[i];
+
+          // if (text.startsWith('Rodney Dangerfield, Keith Gordon, Sally Kellerman')) {
+          //   let count = 0;
+          //   uw.wrap(text, width, (idx0, idx1) => console.log(++count, text.slice(idx0, idx1)));
+          // }
+
+          let count = 0;
+          wrap(text, randInt(50, 250), (idx0, idx1) => { count++; });
+
+          // let lines = [];
+          // wrap(text, width, (idx0, idx1) => { lines.push(text.slice(idx0, idx1)); });
+        }
+        console.timeEnd('uWrap 100k');
+      }, 1000);
+
+      setTimeout(() => {
+        console.time('canvas-hypertxt 100k');
+
+        for (let i = 0; i < strings.length; i++) {
+          let text = strings[i];
+
+          if (text.length > 0) {
+            let lines = split(ctx, text, font, randInt(50, 250), true);
+            let count = lines.length;
+          }
+        }
+
+        console.timeEnd('canvas-hypertxt 100k');
+      }, 2000);
+
+      /*
+      setTimeout(() => {
+        console.time('canvas-hypertxt');
+
+        for (let i = 0; i < stringArrs.length; i++) {
+          let text = stringArrs[i][7];
+
+          if (text.length > 0) {
+            let lines = split(ctx, text, font, width, true);
+            let count = lines.length;
+          }
+        }
+
+        console.timeEnd('canvas-hypertxt');
+      }, 2000);
+
+
+      setTimeout(() => {
+        console.time('canvas-txt');
+
+        for (let i = 0; i < stringArrs.length; i++) {
+          let text = stringArrs[i][7];
+
+          if (text.length > 0) {
+            let lines = canvasTxt.splitText({ctx, text, width});
+            let count = lines.length;
+          }
+        }
+
+        console.timeEnd('canvas-txt');
+      }, 2700);
+      */
+
+      setTimeout(() => {
+        const wrap = varPreLine(ctx);
+        const lineHeight = 22;
+
+        for (const el of document.querySelectorAll('.test')) {
+          let text = el.textContent;
+          let { width, height } = el.getBoundingClientRect();
+          let can = document.createElement('canvas');
+          can.width = width;
+          can.height = height;
+
+          // if (navigator.userAgent.includes("Firefox"))
+            can.style.top = '5px';
+          // else
+            // can.style.top = '4px';
+
+          let ctx = can.getContext('2d');
+          ctx.font = font;
+          ctx.textBaseline = "top";
+          ctx.letterSpacing = '0.15px';
+          ctx.fillStyle = 'red';
+
+          let i = 0;
+          wrap(text, width, (idx0, idx1) => {
+            ctx.fillText(text.slice(idx0, idx1), 0, i * lineHeight);
+            i++;
+          });
+
+          el.prepend(can);
+        }
+      }, 3000);
+
+      // setTimeout(() => {
+      //   const lineHeight = 22;
+
+      //   for (const el of document.querySelectorAll('.test')) {
+      //     let text = el.textContent;
+      //     let { width, height } = el.getBoundingClientRect();
+      //     let can = document.createElement('canvas');
+      //     can.width = width;
+      //     can.height = height;
+
+      //     // if (navigator.userAgent.includes("Firefox"))
+      //       can.style.top = '5px';
+      //     // else
+      //       // can.style.top = '4px';
+
+      //     let ctx = can.getContext('2d');
+      //     ctx.font = font;
+      //     ctx.textBaseline = "top";
+      //     ctx.letterSpacing = '0.15px';
+      //     ctx.fillStyle = 'red';
+
+      //     split(ctx, text, font, width, true).forEach((line, i) => {
+      //       ctx.fillText(line, 0, i * lineHeight);
+      //     });
+
+      //     el.prepend(can);
+      //   }
+      // }, 3000);
+
+
+      // setTimeout(() => {
+      //   const lineHeight = 22;
+
+      //   for (const el of document.querySelectorAll('.test')) {
+      //     let text = el.textContent;
+      //     let { width, height } = el.getBoundingClientRect();
+      //     let can = document.createElement('canvas');
+      //     can.width = width;
+      //     can.height = height;
+
+      //     if (navigator.userAgent.includes("Firefox"))
+      //       can.style.top = '5px';
+      //     else
+      //       can.style.top = '4px';
+
+      //     let ctx = can.getContext('2d');
+      //     ctx.font = font;
+      //     ctx.textBaseline = "top";
+      //     ctx.letterSpacing = '0.15px';
+      //     ctx.fillStyle = 'red';
+
+      //     canvasTxt.splitText({ctx, text, width}).forEach((line, i) => {
+      //       ctx.fillText(line, 0, i * lineHeight);
+      //     });
+
+      //     el.prepend(can);
+      //   }
+      // }, 3000);
+    }, 1000);
+  </script>
+
+  <div class="test" style="width: 100px;">The quick brown fox jumps over the lazy dog.</div>
+  <div class="test" style="width: 100px;">Rodney Dangerfield, Keith Gordon, Sally Kellerman, Robert Downey jr., Burt Young, Ned Beatty, Terry Farrell, Paxton Whitehead, M. Emmet Walsh, Adrienne Barbeau</div>
+
+  <div class="test" style="width: 120px;">Rodney Dangerfield, Keith Gordon, Sally Kellerman, Robert Downey jr., Burt Young, Ned Beatty, Terry Farrell, Paxton Whitehead, M. Emmet Walsh, Adrienne Barbeau</div>
+
+  <div class="test" style="width: 134px;">Bugs Bunny's Third Movie: 1001 Rabbit Tales</div>
+  <div class="test" style="width: 134px;">Rodney Dangerfield, Keith Gordon, Sally Kellerman, Robert Downey jr., Burt Young, Ned Beatty, Terry Farrell, Paxton Whitehead, M. Emmet Walsh, Adrienne Barbeau</div>
+  <div class="test" style="width: 134px;">Rodney-Dangerfield, Keith Gordon, Sally Kellerman, Robert-Downey jr., Burt Young, Ned Beatty, Terry Farrell, Paxton Whitehead, M. Emmet Walsh, Adrienne Barbeau</div>
+  <div class="test" style="width: 134px;">Rodney-Dangerfield, Keith Gordon, Sally Kellerman, Robert3-Downey jr., Burt Young, Ned Beatty, Terry Farrell, Paxton Whitehead, M. Emmet Walsh, Adrienne Barbeau</div>
+
+  <div class="test" style="width: 150px;">Rodney Dangerfield, Keith Gordon, Sally Kellerman, Robert Downey jr., Burt Young, Ned Beatty, Terry Farrell, Paxton Whitehead, M. Emmet Walsh, Adrienne Barbeau</div>
+
+  <div class="test" style="width: 200px;">Rodney Dangerfield, Keith Gordon, Sally Kellerman, Robert Downey jr., Burt Young, Ned Beatty, Terry Farrell, Paxton Whitehead, M. Emmet Walsh, Adrienne Barbeau</div>
+
+  <div class="test" style="width: 300px;">Rodney Dangerfield, Keith Gordon, Sally Kellerman, Robert Downey jr., Burt Young, Ned Beatty, Terry Farrell, Paxton Whitehead, M. Emmet Walsh, Adrienne Barbeau</div>
+
+  <div class="test" style="width: 400px;">Rodney Dangerfield, Keith Gordon, Sally Kellerman, Robert Downey jr., Burt Young, Ned Beatty, Terry Farrell, Paxton Whitehead, M. Emmet Walsh, Adrienne Barbeau</div>
+  <div class="test" style="width: 400px;">Rodney Dangerfield, Keith Gordon, Sally Kellerman, Robert-Downey jr., Burt Young, Ned Beatty, Terry Farrell, Paxton Whitehead, M. Emmet Walsh, Adrienne Barbeau</div>
+  <div class="test" style="width: 400px;">RodneyDangerfield,KeithGordon,SallyKellerman,RobertDowneyjr., Burt Young, Ned Beatty, Terry Farrell, Paxton Whitehead, M. Emmet Walsh, Adrienne Barbeau</div>
+
+  <hr>
+</body>
+</html>
