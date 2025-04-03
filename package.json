@@ -1,7 +1,7 @@
 {
   "name": "uwrap",
   "version": "0.1.0",
-  "description": "",
+  "description": "A very fast and accurate text and line wrapping util",
   "homepage": "https://github.com/leeoniya/uWrap#readme",
   "bugs": {
     "url": "https://github.com/leeoniya/uWrap/issues"
@@ -10,11 +10,29 @@
     "type": "git",
     "url": "git+https://github.com/leeoniya/uWrap.git"
   },
-  "license": "ISC",
+  "license": "MIT",
   "author": "",
   "type": "module",
-  "module": "./dist/uDSV.mjs",
-  "types": "./dist/uDSV.d.ts",
+  "module": "./dist/uWrap.mjs",
+  "types": "./dist/uWrap.d.ts",
+  "files": [
+    "package.json",
+    "README.md",
+    "LICENSE",
+    "dist"
+  ],
+  "keywords": [
+    "text",
+    "line",
+    "word",
+    "wrap",
+    "wrapping",
+    "split",
+    "virtualization",
+    "virtualize",
+    "canvas",
+    "measure"
+  ],
   "scripts": {
     "test": "node ./test/uWrap.test.mjs",
     "build": "rollup -c"
@@ -22,7 +40,7 @@
   "devDependencies": {
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.2",
-    "rollup": "^4.37.0",
+    "rollup": "^4.39.0",
     "skia-canvas": "^2.0.2",
     "tslib": "^2.8.1"
   }

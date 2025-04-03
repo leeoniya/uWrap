@@ -1,23 +1,28 @@
 ## ⏎ μWrap
 
-A [10x faster](#performance) and more accurate text wrapping util in [1.5KB (min)](https://github.com/leeoniya/uWrap/blob/main/dist/uWrap.iife.min.js) _(MIT Licensed)_
+A [10x faster](#performance) and more accurate text wrapping util in [< 2KB (min)](https://github.com/leeoniya/uWrap/blob/main/dist/uWrap.iife.min.js) _(MIT Licensed)_
 
 ---
 ### Introduction
 
-uWrap was made to efficiently predict varying row heights for list and grid [virtualization](https://www.patterns.dev/vanilla/virtual-lists/) - a strategy for performance optimization when rendering large datasets.
-Doing this both quickly and accurately turns out to be a non-trivial task, since Canvas2D provides no API for text wrapping, and `measureText()` is very expensive;
-rendering to the DOM is also out of the question due to poor performance.
-Additionally, font size, variable-width fonts, `letter-spacing`, explicit line breaks, and different `white-space` choices impact the exact number of lines in final result.
+uWrap exists to efficiently predict varying row heights for list and grid [virtualization](https://www.patterns.dev/vanilla/virtual-lists/), a technique for UI performance optimization when rendering large, scrollable datasets.
+Doing this both quickly and accurately turns out to be a non-trivial task since Canvas2D provides no API for text wrapping, and `measureText()` is quite expensive;
+measuring via DOM is also a non-starter due to poor performance.
+Additionally, font size, variable-width fonts, `letter-spacing`, explicit line breaks, and different `white-space` choices affect the number of wrapped lines.
+
+Notes:
+
+- Today, works most accurately with Latin charsets
+- Does not yet handle Windows-style `\r\n` explicit line breaks
+- Only `pre-line` wrapping strategy is implemented so far
 
 ---
 ### Performance
 
-[canvas-hypertxt](https://github.com/glideapps/canvas-hypertxt) looks to be the fastest similar utility.
-uWrap handily out-performs it in both CPU and memory usage by a wide margin while being significantly _more_ accurate.
+uWrap handily out-performs [canvas-hypertxt](https://github.com/glideapps/canvas-hypertxt) in both CPU and memory usage by a wide margin while being significantly _more_ accurate.
 
-The benchmark below wraps 100k random sentances within boxes of random widths between 50px and 250px.
-You can see this benchmark performed in the console on the [demo page](https://leeoniya.github.io/uWrap/demo/).
+The benchmark below wraps 100k random sentances in boxes of random widths between 50px and 250px.
+You can see this live in DevTools console of the [demo page](https://leeoniya.github.io/uWrap/demo/).
 
 <table>
   <tr>
@@ -70,18 +75,18 @@ let ctx = document.createElement('canvas').getContext('2d');
 ctx.font = "14px Inter, sans-serif";
 ctx.letterSpacing = '0.15px';
 
-// init wrapper
-let wrap = varPreLine(ctx);
+// init util fns
+const { count, test, split } = varPreLine(ctx);
 
-// sample text
+// example text
 let text = 'The quick brown fox jumps over the lazy dog.';
 
-// call wrapper with text to wrap, width of bounding container, and per-line callback
-let lineCount = 0;
-wrap(text, width, () => { count++; });
+// count lines
+let numLines = count(text, width);
 
-// or process the lines for rendering, etc..
+// test if text will wrap
+let willWrap = test(text, width);
 
-let lines = [];
-wrap(text, width, (idx0, idx1) => { lines.push(text.slice(idx0, idx1)); });
+// split lines (with optional limit)
+let lines = split(text, width, 3);
 ```

@@ -121,7 +121,31 @@ var uWrap = (function (exports) {
           }
           cb(headIdx, to + 1);
       }
-      return each;
+      return {
+          each,
+          split: (text, width, limit = Infinity) => {
+              let out = [];
+              each(text, width, (idx0, idx1) => {
+                  out.push(text.slice(idx0, idx1));
+                  if (out.length === limit)
+                      return false;
+              });
+              return out;
+          },
+          count: (text, width) => {
+              let count = 0;
+              each(text, width, () => { count++; });
+              return count;
+          },
+          test: (text, width) => {
+              let count = 0;
+              each(text, width, () => {
+                  if (++count === 2)
+                      return false;
+              });
+              return count === 2;
+          },
+      };
   }
 
   exports.varPreLine = varPreLine;

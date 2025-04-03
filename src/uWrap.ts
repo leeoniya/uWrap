@@ -140,7 +140,32 @@ export function varPreLine(ctx: CanvasRenderingContext2D) {
     cb(headIdx, to + 1);
   }
 
-  return each;
+  return {
+    each,
+    split: (text: string, width: number, limit = Infinity) => {
+      let out: string[] = [];
+      each(text, width, (idx0: number, idx1: number) => {
+        out.push(text.slice(idx0, idx1));
+
+        if (out.length === limit)
+          return false;
+      });
+      return out;
+    },
+    count: (text: string, width: number) => {
+      let count = 0;
+      each(text, width, () => { count++; });
+      return count;
+    },
+    test: (text: string, width: number) => {
+      let count = 0;
+      each(text, width, () => {
+        if (++count === 2)
+          return false;
+      });
+      return count === 2;
+    },
+  };
 }
 
 /*

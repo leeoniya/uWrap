@@ -87,16 +87,11 @@
 
       setTimeout(() => {
         console.time('uWrap 100k');
-        let wrap = varPreLine(ctx);
+        let { count } = varPreLine(ctx);
 
         for (let i = 0; i < strings.length; i++) {
           let text = strings[i];
-
-          let count = 0;
-          wrap(text, randInt(50, 250), (idx0, idx1) => { count++; });
-
-          // let lines = [];
-          // wrap(text, width, (idx0, idx1) => { lines.push(text.slice(idx0, idx1)); });
+          let c = count(text, randInt(50, 250));
         }
         console.timeEnd('uWrap 100k');
       }, 500);
@@ -120,7 +115,7 @@
       // ACCURACY OVERLAYS //
 
       setTimeout(() => {
-        const wrap = varPreLine(ctx);
+        const { each } = varPreLine(ctx);
 
         for (const el of document.querySelectorAll('.test')) {
           let text = el.textContent;
@@ -128,7 +123,7 @@
           res.className = 'result';
 
           let t = [];
-          wrap(text, el.offsetWidth, (idx0, idx1) => { t.push(text.slice(idx0, idx1)); });
+          each(text, el.offsetWidth, (idx0, idx1) => { t.push(text.slice(idx0, idx1)); });
           res.textContent = t.join('\n');
           el.prepend(res);
         }
@@ -143,7 +138,6 @@
       //     el.prepend(res);
       //   }
       // }, 2000);
-
 
       // setTimeout(() => {
       //   for (const el of document.querySelectorAll('.test')) {
