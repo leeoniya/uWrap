@@ -21,7 +21,7 @@ Notes:
 
 uWrap handily out-performs [canvas-hypertxt](https://github.com/glideapps/canvas-hypertxt) in both CPU and memory usage by a wide margin while being significantly _more_ accurate.
 
-The benchmark below wraps 100k random sentances in boxes of random widths between 50px and 250px.
+The benchmark below wraps 100,000 random sentences in boxes of random widths between 50px and 250px.
 You can see this live in DevTools console of the [demo page](https://leeoniya.github.io/uWrap/demo/).
 
 <table>
