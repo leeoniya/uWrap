@@ -8,20 +8,20 @@ A [10x faster](#performance) and more accurate text wrapping util in [< 2KB (min
 uWrap exists to efficiently predict varying row heights for list and grid [virtualization](https://www.patterns.dev/vanilla/virtual-lists/), a technique for UI performance optimization when rendering large, scrollable datasets.
 Doing this both quickly and accurately turns out to be a non-trivial task since Canvas2D provides no API for text wrapping, and `measureText()` is quite expensive;
 measuring via DOM is also a non-starter due to poor performance.
-Additionally, font size, variable-width [kerning](https://www.canva.com/learn/kerning/), `letter-spacing`, explicit line breaks, and different `white-space` choices affect the number of wrapped lines.
+Additionally, font size, variable-width [kerning](https://www.canva.com/learn/kerning/), `letter-spacing`, explicit line breaks, and different `white-space` choices affect the wrapping locations.
 
 Notes:
 
-- Today, works most accurately with Latin charsets
+- Currently works most accurately with Latin charsets
 - Does not yet handle Windows-style `\r\n` explicit line breaks
 - Only `pre-line` wrapping strategy is implemented so far
 
 ---
 ### Performance
 
-uWrap handily out-performs [canvas-hypertxt](https://github.com/glideapps/canvas-hypertxt) in both CPU and memory usage by a wide margin while being significantly _more_ accurate.
+uWrap outperforms [canvas-hypertxt](https://github.com/glideapps/canvas-hypertxt) by a wide margin in both CPU and memory usage while being significantly more accurate.
 
-The benchmark below wraps 100,000 random sentences in boxes of random widths between 50px and 250px.
+The benchmark below wraps 100,000 random sentences into boxes of random widths between 50px and 250px.
 You can see this live in DevTools console of the [demo page](https://leeoniya.github.io/uWrap/demo/).
 
 <table>
@@ -61,13 +61,13 @@ or
 ---
 ### API
 
-A 10 LoC [uWrap.d.ts](https://github.com/leeoniya/uWrap/blob/main/dist/uWrap.d.ts) TypeScript def.
+See [uWrap.d.ts](https://github.com/leeoniya/uWrap/blob/main/dist/uWrap.d.ts) TypeScript def.
 
 ---
 ### Usage
 
 ```js
-// import util for wrapping variable-width fonts using pre-line strategy
+// import fn for wrapping variable-width fonts using pre-line strategy
 import { varPreLine } from 'uwrap';
 
 // create a Canvas2D context with desired font settings
