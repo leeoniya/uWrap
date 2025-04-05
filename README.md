@@ -8,7 +8,7 @@ A [10x faster](#performance) and more accurate text wrapping util in [< 2KB (min
 uWrap exists to efficiently predict varying row heights for list and grid [virtualization](https://www.patterns.dev/vanilla/virtual-lists/), a technique for UI performance optimization when rendering large, scrollable datasets.
 Doing this both quickly and accurately turns out to be a non-trivial task since Canvas2D provides no API for text wrapping, and `measureText()` is quite expensive;
 measuring via DOM is also a non-starter due to poor performance.
-Additionally, font size, variable-width fonts, `letter-spacing`, explicit line breaks, and different `white-space` choices affect the number of wrapped lines.
+Additionally, font size, variable-width [kerning](https://www.canva.com/learn/kerning/), `letter-spacing`, explicit line breaks, and different `white-space` choices affect the number of wrapped lines.
 
 Notes:
 
