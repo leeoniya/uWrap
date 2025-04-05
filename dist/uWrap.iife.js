@@ -7,7 +7,7 @@ var uWrap = (function (exports) {
   *
   * uWrap.js
   * A small, fast line wrapping thing for Canvas2D
-  * https://github.com/leeoniya/uWrap (v0.1.0)
+  * https://github.com/leeoniya/uWrap (v0.1.1)
   */
 
   // BREAKS

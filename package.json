@@ -1,6 +1,6 @@
 {
   "name": "uwrap",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A very fast and accurate text and line wrapping util",
   "homepage": "https://github.com/leeoniya/uWrap#readme",
   "bugs": {
