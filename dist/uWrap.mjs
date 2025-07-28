@@ -4,7 +4,7 @@
 *
 * uWrap.js
 * A small, fast line wrapping thing for Canvas2D
-* https://github.com/leeoniya/uWrap (v0.1.1)
+* https://github.com/leeoniya/uWrap (v0.1.2)
 */
 
 // BREAKS
