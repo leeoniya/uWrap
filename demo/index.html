@@ -117,6 +117,42 @@
       setTimeout(() => {
         const { each } = varPreLine(ctx);
 
+        // const texts = [
+        //   'The quick brown',
+        //   'Rodney Dangerfield, Keith Gordon, Sally Kellerman,',
+        //   'Having been a gymnast, we can assume that any instance of a hippopotamus can be construed as a peaceful cranberry?',
+        // ];
+
+        // console.time('ctx.measureText');
+        // let w = 0;
+        // for (let i = 0; i < 10_000; i++) {
+        //   for (let j = 0; j < texts.length; j++) {
+        //     w += ctx.measureText(texts[j]).width;
+        //   }
+        // }
+        // console.timeEnd('ctx.measureText');
+        // console.log(w);
+
+        // console.time('uWrap.each');
+        // w = 0;
+        // for (let i = 0; i < 10_000; i++) {
+        //   for (let j = 0; j < texts.length; j++) {
+        //     each(texts[j], 1e6, (i0, i1, wid) => {
+        //       w += wid;
+        //     });
+        //   }
+        // }
+        // console.timeEnd('uWrap.each');
+        // console.log(w);
+
+        // texts.forEach(text => {
+        //   console.log(text);
+        //   console.log('measureText', ctx.measureText(text).width);
+        //   each(text, 1e6, (i1,i2,wid) => {
+        //     console.log('uWrap.each', wid);
+        //   });
+        // })
+
         for (const el of document.querySelectorAll('.test')) {
           let text = el.textContent;
           let res = document.createElement('div');

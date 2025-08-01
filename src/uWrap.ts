@@ -51,7 +51,7 @@ export function varPreLine(ctx: CanvasRenderingContext2D) {
     }
   }
 
-  type LineCallback = (idx0: number, idx1: number) => void | boolean;
+  type LineCallback = (idx0: number, idx1: number, width: number) => void | boolean;
 
   const eachLine: LineCallback = () => {};
 
@@ -103,7 +103,7 @@ export function varPreLine(ctx: CanvasRenderingContext2D) {
         inWS = true;
       }
       else if (c === N) {
-        if (cb(headIdx, i) === false)
+        if (cb(headIdx, i, headWid) === false)
           return;
 
         headIdx = headEnd = i + 1;
@@ -113,7 +113,7 @@ export function varPreLine(ctx: CanvasRenderingContext2D) {
       }
       else {
         if (headEnd > headIdx && headWid + w > width) {
-          if (cb(headIdx, headEnd) === false)
+          if (cb(headIdx, headEnd, headWid) === false)
             return;
 
           headWid = tailWid + w;
@@ -137,7 +137,7 @@ export function varPreLine(ctx: CanvasRenderingContext2D) {
       }
     }
 
-    cb(headIdx, to + 1);
+    cb(headIdx, to + 1, headWid);
   }
 
   let mayWrap = /\s|-/;

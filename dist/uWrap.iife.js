@@ -89,7 +89,7 @@ var uWrap = (function (exports) {
                   inWS = true;
               }
               else if (c === N) {
-                  if (cb(headIdx, i) === false)
+                  if (cb(headIdx, i, headWid) === false)
                       return;
                   headIdx = headEnd = i + 1;
                   headWid = tailWid = 0;
@@ -98,7 +98,7 @@ var uWrap = (function (exports) {
               }
               else {
                   if (headEnd > headIdx && headWid + w > width) {
-                      if (cb(headIdx, headEnd) === false)
+                      if (cb(headIdx, headEnd, headWid) === false)
                           return;
                       headWid = tailWid + w;
                       headIdx = headEnd = tailIdx;
@@ -119,7 +119,7 @@ var uWrap = (function (exports) {
                   inWS = false;
               }
           }
-          cb(headIdx, to + 1);
+          cb(headIdx, to + 1, headWid);
       }
       let mayWrap = /\s|-/;
       return {

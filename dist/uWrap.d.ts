@@ -1,5 +1,5 @@
 /** may return false to exit loop early */
-export type LineCallback = (idx0: number, idx1: number) => void | boolean;
+export type LineCallback = (idx0: number, idx1: number, width: number) => void | boolean;
 
 /** invoke callback for each line with start/end idxs */
 export type Each = (text: string, width: number, cb: LineCallback) => void;
